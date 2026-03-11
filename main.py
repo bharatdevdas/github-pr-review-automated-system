@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from github_client import parse_pr_url, fetch_pr
 from repo_reader import load_repo_context
 from llm import call_llm
