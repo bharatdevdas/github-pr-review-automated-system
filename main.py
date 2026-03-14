@@ -36,22 +36,16 @@ Check against company standards:
 
     results = {}
 
-    pr_diff = pr['diff'][:10000] # Truncate large diffs
-    if pr['body'] == None:
-        pr_body = ""
-    else:
-        pr_body = pr['body'][:2000]
-
     for check, instruction in checks.items():
         prompt = f"""
 PR TITLE:
 {pr['title']}
 
 PR DESCRIPTION:
-{pr_body}
+{pr['body']}
 
 DIFF:
-{pr_diff}
+{pr['diff']}
 
 REPO CONTEXT:
 {repo_context}
@@ -74,10 +68,13 @@ Respond ONLY in the following JSON format. NO MARKDOWN, NO EXPLANATIONS, NO CODE
 
 
 if __name__ == "__main__":
-    pr_link = input("PR URL: ")
+    while True:
+        pr_link = input("PR URL (or type 'exit' to quit): ")
+        if pr_link.lower() == 'exit':
+            break
 
-    output = evaluate_pr(pr_link)
-    print("\n=== FINAL REVIEW ===\n")
-    for k, v in output.items():
-        clean_v = extract_json_from_text(v)
-        print(f"\n--- {k.upper()} ---\n{clean_v}")
+        output = evaluate_pr(pr_link)
+        print("\n=== FINAL REVIEW ===\n")
+        for k, v in output.items():
+            clean_v = extract_json_from_text(v)
+            print(f"\n--- {k.upper()} ---\n{clean_v}")
